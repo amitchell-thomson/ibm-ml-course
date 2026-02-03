@@ -1,0 +1,96 @@
+---Variable Transformation---
+    || Background
+        - models used in ML workflows often make some assumptions about the data
+        - eg. linear regression assumes a linear relationship between observations and target variables
+
+            y(x) = a + bx + cx + dx
+
+            here, (a,b,c,d) represent the model parameters
+    
+    || Logarithms
+        - Predictions from linear regression models also assume residuals are normally distributed
+        - Features and predicted data are often skewed
+        - Data transformations can solve this issue - and create residuals that are normally distributed
+        - There are a number of useful transformation fuctions:
+            > from numpy import log, log1p (same as log(1+x))
+            > from scipy.stats import boxcox
+
+        - log transformations can be useful for linear regression (as converts products into sums)
+
+            y(x) = a + blog(x) + clog(x) + dlog(x)
+
+    || Polynomial Features
+        - we can estimate higher order relationships in this data by adding polynomial features:
+
+            y(x) = a + bx + cx^2
+
+        - we can estimate higher order relationships by adding higher polynomial features
+        - syntax - code
+
+            # import the class containing the transformation method
+            from sklearn.preprocessing import PolynomialFeatures
+
+            # create an instance of the class
+            polyFeat = PolynomialFeatures(degree=2) # polyfeat is now a transformer object
+
+            # create the polynomial features and then transform the data
+            polyFeat = polyFeat.fit(X_data)         # fitting to the X_data
+            X_poly = polyFeat.transform(X_data)     # we now have a polyFeat transformer object that is fit to our data
+-----------------------------
+
+
+
+---Variable Selection---
+    || Background
+        - involves choosing a set of features to include in the model
+        - variables must often be tranformed before they can be used in models , in addition to log and polynomial transforms, 
+          this can include:
+            > Feature Encoding - converting non-numeric features to numeric features
+            > Feature Scaling - converting the scale of numeric data so that they are comparable
+        - the appropriate method of scaling or encoding depends on the features
+
+    || Feature Encoding
+        - Encoding is applied often applied to categorical features, that take non-numeric values
+        - Two primary types of categorial features
+            > Nominal - categorical variables take values in unordered categories (eg. red, blue, green...)
+            > Ordinal - categorical varaibles take values in ordered categories (eg. low, medium, high...)
+        - Approaches to feature encoding
+            > Binary encoding - convert variables to either 0 or 1 (suitable for variables taking only 2 values, eg. male/female)
+            > One-hot encoding - converts variables that take multiple values to binary, one binary variable for each category,
+                                 creating several new categories
+            > Ordinal encoding - involves coverting ordered categories to numerical values (eg. low, medi, high -> 0, 1, 2)
+
+    || Feature Scaling
+        - involves adjusting a variable's scale, to allow comparison of variables with different scales
+        - different continuous numeric features often have different scales - this might be an issue as it could give certain features
+          a lot more weight than other, wrongly
+        - Approaches to feature scaling
+            > Standard scaling - converts features to standard normal variables (subtract mean and dividing by standard deviation)
+            > Min-max scaling - maps variables to continuous variables in the 0-1 range (subtract min divide by range) - this
+                                type of scaling is sensitive to outliers
+
+            > Robust scaling - similar to min-max scaling but instead maps the interquartile range to 0-1, so the variable itself
+                               can take values outside of the 0-1 interval
+
+    || Common transformations in python
+        - Continuous numerical values:          standard, min-max, robust scaling
+            > code:
+                from sklearn.preprocessing import StandardScaler, MinMaxScaler, RobustScaler
+
+        - Nominal, categorical features:        binary, one-hot encoding
+            > code:
+                from sklearn.preprocessing import LabelEncoder, LabelBinarizer, OneHotEncoder
+                from pandas import get_dummies
+
+        - Ordinal, categorical features:        ordinal encoding (0,1,2,3)
+            > code:
+                from sklearn.feature_extraction import DictVectorizer  # identify each value and the number you want it to take
+                from sklearn.preprocessing import OrdinalEncoder
+------------------------
+
+
+
+
+
+
+

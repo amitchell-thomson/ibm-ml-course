@@ -1,0 +1,152 @@
+---Introduction---
+    || Machine Learning
+        - Machine learning is the process by which machines 'learn' and infer predictions from given data
+        - Instead of creating exact models to predict outcomes, we create an esitmate of a model 'learning' from the data
+        - Approximation of the model allows feature variables to be predicted using the model
+    || Models
+        - A model is a small thing that predicts a larger thing
+        - A good model omits unimportant details while retaining what is important
+------------------
+
+
+---Supervised machine learning (SVM)---
+    || ML Framework for SVM
+        - Framework estimates a relationship between the features and the target (y)
+        - The "fit parameters" involves parameters of the model that we estimate (fit) using the data
+        - To implement our approach we make decisions regarding how to produce these estimates - these decisions lead to 
+          hyperparameters
+        - There are two main modelling approaches:
+            > Regression - y is numeric
+            > Classification - y is categorical
+        - The framework equation for SVM is:
+                
+                y_p = f(omega, x)
+
+            x: input
+            y: output values predicted by the model
+            f(.): prediction function that generates predictions from x and omega
+
+        - Data scientists train the model to find the best omega given past data
+            > each observation x will relate to some outcome y
+            > past data can give us the 'correct answers' for each value of x and the value of the y_p
+            > we feed the learned parameters from the training set into the model, and then use it to predict the new data
+
+        - To update the parameters as we train the data we use a loss function that takes in the correct value for y and the 
+          predicted value, uses the difference (the loss) to update the parameters
+
+    || Interpretation vs Prediction
+        - Interpretation    
+            > In some cases, the primary objective is to train a model to find insights about the data
+            > in y_p = f(omega, x), the interpretation approach uses omega to give us insight into a system
+            > the common workflow is:
+                * gather x,y and train the model by finding the omega that gives the best prediction
+                * focus on omega rather than y_p to generate insights
+
+            > Examples of interpretation exercises
+                * x = customer demographics, y = sales data --> examine omega to understand loyalty by segment
+                * x = car safety features, y = traffic accidents --> examime omega to understand what makes cars safer
+        - Prediction
+            > In the prediction approach, we focus just on how our well our predictions do
+            > IN y_p = f(omega, x), the prediciton approach compares y_p with y_p
+            > The focus is on performance metrics, which measure the quality of the models predictions
+                * performance metrics usually involve a measure of the closeness of y and y_p
+                * Without focusing on interpretatability, we risk having a Black-box model (where we dont know what is happening)
+
+            > Examples of predicition exercises
+                * x = customer purchase history, y = customer churn --> focus on prediction customer churn
+                * x = financial information, y = flagged default/non-default --> focus on prediciting loan default
+                * x = purchase history, y = future purchases --> focus on prediction next purchase
+        
+        - the majority of projects will call for a balance between interpretation and prediction
+            > interpretation can provide insights into improving prediciton, and vice-versa
+            > note: not all models will allow both, SVM models provde varying levels of support for interpretation vs prediciton
+
+    || Types of SVM
+        - Regression
+            > outcome is continuous (numerical)
+            > eg. Movie Revenue
+                movie data (known revenue) + untrained model --(fit)--> trained model
+                movie data (unknown revenue) + trained model --(predict)--> predicted revenue
+
+        - Classification
+            > outcome is categorical (labelling)
+            > eg. Predicting Spam Emails
+                emails labelled spam/not + untrained model --(fit)--> trained model
+                unlabelled emails + trained model --(predict)--> predict whether emails are spam/not
+            > for classification we will need features that can be quantified, labels that are known (so we can train the data) and
+              a way to measure the similarity between a new record and the ones we learn from
+
+    || SVM Regression with housing data example
+        - here, our target is the price of housing, and our features include characteristics about the house or area
+        - suppose we fit our model based on data on housing prices in Ames, Iowa and obtain estimates of parameters omega
+        - these parameters represent coefficients relating features x with target values 
+        - we interpret our results to learn about feature importance (how important to the prediction something is)
+        - our primary aim may be prediciton, in which case we are more focussed on generating values for y_p, than
+          interpreting parameters
+
+    || SVM Classification with customer churn example
+        - customer churn occurs when a customer leaves a company
+        - data related to churn may include a target variable for whether or not a customer has left, and information on 
+          customer characteristics
+        - in this example we may be interested in both predicition and interpretatability
+            > interpretation: understanding factors which may lead to customers leaving
+            > prediciton: estimating how long customers are likely to stay
+---------------------------------------
+
+
+---Linear Regression---
+    || Introduction
+        - Suppose we are trying to predict the box office of a movie, considering the marketing budget
+            > We have a scatter plot of many points on a graph with Box office on the y and budget on the x
+            > Trying to find a line of best fit of the equation
+                y_b(x) = b_0 + b_1 * x
+
+            > describes a straight line of best fit through the data, with the coefficients b_0 and b_1 being found by minimising
+              the cost function (minimising the distance between each one of the dots and the line)
+        - For a given line, we will have the predicted values (points on the line) and the actual values (points on scatter)
+        - We can calculate the residuals by finding the distance between each point and the line, ie. subtracting observed from
+          the predicted values
+            > to minimise the error function we would use the formula
+                (b_0 + b_1 * x_obs) - y_obs
+            > to ensure that erro is absolute magnitude and the difference being positive or negative does not matter, we square
+              this difference (called the mean square error)
+
+                        1/n * SUM{((b_0 + b_1 * x_obs(i)) - y_obs(i))^2}
+
+            > we then think of b_0 and b_1 as the variables, and use the known values for x_obs and y_obs to minimise the total
+              value of the error - this will then give the line of best fit
+
+    || Modelling best practice
+        - we first need to come up with a cost function to fit the model
+        - then we develop multiple models, using different hyperparameters etc.
+        - we then compare the results and choose the best one
+        - Measures of error
+            > Sum of Squareed Error (SSE)
+                SUM{(y_b(x(i)) --> y_obs(i))^2} - (unexplained variance)
+            > Total Sum of Squares (TSS)
+                SUM{(y_obs_mean - y_obs(i))^2} - (variance)
+            > R^2 metrics (most common)
+                1 - SSE/TSS --> 1 - unexplained variance/total variance
+
+                * describes how well the model was able to explain the variance from the mean
+
+    || Syntax of Linear Regression
+        from sklearn.linear_model import LinearRegression
+        
+        # create an instance of the class 
+        LR = LinearRegression()
+
+        # fit the instance on the data and then predict the expected value
+        LR = LR.fit(x_train, y_train)
+        y_predcit = LR.predict(x_test)
+
+
+
+                
+
+
+
+    || Measuring Errors
+
+-----------------------
+    

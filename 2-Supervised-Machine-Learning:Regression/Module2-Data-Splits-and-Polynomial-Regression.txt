@@ -1,0 +1,57 @@
+---Training and Test Splits---
+    || Splitting data into training and test samples
+        - set aside part of the total dataset for training, and part for testing (normally 0.8 train 0.2 test)
+        - we can the fit the model to the training data and then see how it performs with the unseen training data
+        - when applying the model to the test data we compare each prediction with the actual value and measure error
+        - the general process is:
+
+            ||training data||    ---(x_train, y_train)--->      model(x_train, y_train).fit()    --->    model
+
+            ||test data||             ---(x_test)--->               model.predict(x_test)        --->    y_predict
+                |
+                |---(y_test: actual y)---> error metric (y_test, y_predict) ---> test error
+
+        - Syntax
+            from sklearn.model_selection import train_test_split
+
+            train, test = train_test_split(data, test_size=0.3)
+
+------------------------------
+
+
+---Polynomial Regression---
+    || Adding polynomial features
+        - adding polynomial features means adding terms such as x^2 to try to capture non linear relationships
+        - the resulting algorithm/model is still linear regression as it is still a linear combination of features, we have just
+          added new features that are of polynomial origin
+        - polynomial features dont just have to be one feature to a certain power but can also be the product/division of two
+          other features
+        - how do you choose the correct functional formula
+            > check realtionship of each variable with outcome
+            > create all possible combinations and test wether removing certain reaction had positive or negative effects
+        - adjusting the standard linear approach to regression by adding polynomial features is one of many approaches to dealing
+          with the fundamental trade off between prediction and interpretation
+
+    || Other variations
+        - in addition to adding polynomial features there are several other variants of standard models that can be used to 
+          improve prediciton, many being used for both regression and classification
+        - examples are
+            > logistic regression
+            > K-nearest neighbours
+            > decision trees
+            > support vector machines
+            > random forests
+            > ensemble methods
+            > deep learning approaches
+    
+    || Syntax of polynomial features
+        from sklearn.preprocessing import PolynomialFeatures
+
+        # create an instance of the class
+        polyFeat = PolynomialFeatures(degree=2)
+
+        # calculate the polynomial features then transform the data
+        polyFeat = polyFeat.fit(X_data)
+        X_poly = polyFeat.transform(X_data )
+
+---------------------------

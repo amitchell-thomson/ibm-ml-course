@@ -1,0 +1,223 @@
+---Estimation and Inference---
+    || Introduction
+        - Estimation:   is the application of an algorithm, for example taking an average
+        - Inference:    involves putting an accuracy on the estimate (eg. standard error of an average)
+
+    || Machine learning and Statistical inference
+        - ML and statistical inference are very similar
+        - in both, we are using sample data to learn/infer qualities of the distribution that generated the data
+        - we may care about the entire distribution, or maybe just some features
+        - ML applications that focus on understanding parameters and individual effects involve tools from statistical inference
+    
+    || Example - customer churn
+        - customer churn occurs when a customer leaves a company
+        - data related to churn may include a target variable relating to whether or not that customer has left (churn prediction 
+          is often approached by giving each customer a score 0-1 based on how likely they are to leave)
+
+        - Estimation of factors driving customer churn involves measuring the impact of each factor in predicting churn
+        - Inference involves determining whether these measured impacts are statistically significant
+
+    || Parametric vs Non-Parametric
+        - If inference is about finding the data-generating process (GDP) for the data, then a statistical model (of the data) 
+          is the set of possible distributions or even regressions
+        - A parametric model is a particular type of statistical model
+            > it is also a set of distributions or regressions
+            > but, they have a finite number of parameters
+            > an example of a parametric model would be the normal distribution (parameters are mu and sigma)
+
+        - A non-parametric model relies of fewer assumptions
+            > we don't assume that the data belongs to any particular distribution
+            > this is called distribution free inference
+            > an example of non-parametric inference would be creating a distribution of the data (CDF) using a histogram, note: in
+              this case, we are not specifying parameters
+
+        - Example: customer lifetime value
+            > estimate of customers value to the company
+            > data related to the estimate might include: expected length of time as a customer, expected amount spent over time
+            > to estimate lifetime value, we make assumptions about the data, the assumptions being either parametric or not
+            > To estimate parameters in parametric models, use Maximum Likelihodd Estimation (MLE)
+                * The likelihood function is related to probability and is a function of the parameters of the model
+                * For the population, the function outputs what the most likely values of the mean and standard deviation are given
+                  the sample
+                * We choose the values of all of the parameters such that they maximise the likelihood function
+    || Commonly used distributions
+        - Uniform
+            > uniformly equal chance that you get any value within our range
+            > pdf:
+                f(x) = 1/(b-a) {a<x<b}
+
+        - Normal/Gaussian
+            > Most likely value are values that are closest to the mean
+            > Looks like a bell curve (because it is a bell curve)
+            > Especially useful due to the central limit theorem - if you take have many different sets of samples, and you take the
+              average of each set, then the distribution of those sets will be normal (with enough values)
+
+        - Log normal distribution
+            > if you take the log of a log normally distributed variable, then you would end up with a normal distribution
+            > with large outliers, there will be a large tail, so a big standard deviation, so further from normally distributed
+            > in the real world, when dealing with money eg. household income there will be a log normal distribution, because of
+              large outliers of billionairs increasing the tail in the positive direction
+
+        - Exponential
+            > Most of the values are to the left hand side (close to zero)
+            > normally used to describe the amount of time before the next event
+
+        - Poisson
+            > Describes the number of events that happen during a fixed period of time
+            > lambda describes both the average value and the variance
+------------------------------
+
+
+
+---Bayesian vs Frequentist Statistics---
+
+    Estimate the probabilities of a certain number of customers coming in a fixed period of time (using poisson)
+    Processes may have true frequencies, but we are interested in modelling probabilities as many repeats of the same experiment
+
+    || Frequentist
+        - A frequentist is concerned with repeated observations in the limit
+        - The frequentist approach is to:
+            1. derive the probabilistic property of a procedure
+            2. apply the probability directly to the observed data
+    
+    || Bayesian
+        - Describes parameters by probability distributions
+        - Before seeing any data, a prior distribution (based on experiment's belief) is formulated
+        - This prior distribution is then updated after seeing data
+        - After updating, the new distribution is called the posterior distribution
+
+    We use much of the same maths/formulas for frequentist and bayesian statistics, the element that differs is the interpretation
+----------------------------------------
+
+
+
+---Hypothesis Testing---
+
+    || Introduction
+        - A hypthesis is a statement about a population parameter
+        - We create two hypotheses
+            1. Null hypothesis (H0)
+            2. Alternate hypothesis (H1 or HA)
+
+            We decide which one to call the null depending on how the problem is set up
+
+        -  coin toss example:
+            > 2 coins: coin 1 has 70% heads chance, coin 2 has 50% heads chance
+            > pick one coin without looking
+            > toss chosen coin 10 times, and count no. heads
+            > given the number of heads, which coin did you pick?
+           Walkthrough:
+            > given what we know about coins 1 and 2, we can make a table of the probability of seeing x heads out of 10 losses:
+                x               0       1       2       3       4       5       6       7       8       9       10
+                coin1-0.7     0.000   0.0001  0.001   0.009   0.037   0.103   0.200   0.267   0.236   0.121   0.028 
+                coin2-0.5     0.001   0.010   0.044   0.117   0.205   0.246   0.205   0.117   0.044   0.010   0.001
+            > suppose we get 3 heads
+                * probability of 3 heads given coin 2 is 0.117 and probability of 3 heads given coin 1 is 0.009
+                * so, getting 3 heads out of 10 means coin 2 is 0.117/0.009 = 13 times more likely to have been the coin that coin 1
+                * 13x is the likelihood ratio
+
+    || Bayesian interpretation
+        - In the bayesian interpretation, we need priors for each hypothesis, and we choose randomly the coin to flip
+        - so:
+            P(H1 = choose coin 1) = 1/2
+            P(H2 = choose coin 2) = 1/2
+        - we then update the priors after seeing the data (x = 3 heads out of 10), using Bayes Rule:
+            P(H1|x) = P(x|H1)P(H1) / P(x)
+
+        - for likelihood ratio
+            P(H2|x) / P(H1|x) = P(x|H2)P(H2) / P(x|H1)P(H1)
+            likelihood ratio = 0.117 * 0.5 / 0.009 * 0.5 = 13
+
+        - the priors are multiplied by the likelihood ratio, which does not surprise on the priors
+        - the likelihood ratio tells us how we should update the priors in reaction to seeing a given set of data
+    
+    || Type I vs type II error
+        - The Neyman-Pearson is non-bayesian and gives us an up or down vote H0 or H1
+        - Terminology:
+                                      Decision
+                        ------Accept H0------Accept H1-------
+            truth   H0  |      Correct      Type I error    |
+                    H1  |   Type II error     Correct       |
+                        -------------------------------------
+        
+            > type I error is incorrectly rejecting the null
+            > type II error is incorrectly accepting the null
+            > the power of a test is equal to:
+                power = 1-P(tpye II error)
+            > the likelihood ratio is a test statistic, meaning we use it to decide whether to accept or reject H0
+            > the rejection region is the set of values of the test statistic for which we reject the null hypothesis
+            > the acceptance region is the set of values of the test statistic for which we accept the null hypothesis
+            > the null distribution is the test statistic's distribution when the null is true
+
+        - using customer churn example:
+            > suppose we use data on customer characteristics to predict who will churn over the next year
+            > in our data, customers who have been with the company for longer are less likely to churn
+            > this could be due to an underlying effect or due to chance
+                * type I error occurs if this effect is due to chance, but we find it significant in the model
+                * type II error occurs if we ascribe the effect to chance, but it is infact non-coincidental
+        
+        - testing marketing intervention effectiveness example:
+            > for a new direct mail marketing campaign to existing customers, the null hypothesis, H0, suggests the campaign does not
+              impact purchasing
+            > the alternative hypthesis, H1, suggests it does have an impact
+
+    || Significant levels and p-values
+        - Signicance level
+            > we know the distribution of the null hypothesis
+            > a significance level (alpha) is a probability threshold below which the null hypothesis will be rejected
+            > we must choose alpha before computing the test statistic, otherwise we will be accused of p-hacking
+            > the lower the alpha, the more likely a rejection of the null is to be Correct
+            > alpha is somewhat arbitrary, usually being 0.01 or 0.05 or 0.001
+
+        - p-value
+            > the p-value is the smallest significance level at which the null hypothesis would be rejected
+            > the confidence interval is the values of the test statistic for which we accept the null
+            > as an example, suppose we see 3 heads in 10 rolls, under the null hypothesis of 50/50 heads chance
+                * this has a 17% probability of occuring, so a p-value of 0.17
+                * we should have previously chosen a p-value cutoff (same as significance level), normally 0.05
+                * since 0.17 > 0.05, we do not reject the null hypthesis
+
+    || F-Statistic in regression
+        - just a test statisic for regressions
+        - H0: the data can be modelled by setting all of our betas (coefficients) to zero
+            > you reject this null hypthesis if the p-value is small enough
+            > p-value in regression is the probability of coming up with the data that you came up with given the coefficients having
+              no effect (betas are zero)
+            > this is seen as the probability of getting a certain F-statistic
+        - power vs number of tests
+            > if you do many 5% significance tests looking for a significant result, the cahcnes of type I error increase
+            > ie. if you run 10 tests, you are more likely to randomly get extreme data and reject the null hypothesis
+            > probability of at least one type 1 error is:  
+                1 - (1 - 0.05)^(#tests), (given the null hypthesis is true)
+            > the Bonferroni correction tells us to choose a p-threshold, so that the probability of making a type I error is 5%
+                - from this, we typically choose a p-threshold = 0.05/(#tests)
+                - this correction allows for the probability of a type I error to be controlled, but at the cost of power
+                - power refers to the probability of correctly rejecting a false null hypthesis
+                - effects either need to be larger, or tests need larger samples, to be detected
+                - best practice is to limit the number of comparisons done to a few well motivated characteristics. 
+------------------------
+
+---Correlation vs Causation---
+    || Introduction
+        - if two variables X and Y are correlated, then X is useful for predicting Y 
+        - if we are trying to model Y, and we find things that correlate with Y, we may improve the modelling
+        - however, we should be careful changing X in the hopes of changing Y, as X and Y can be correlated for many different reasons
+            > X causes Y (what we want)
+            > Y causes X (mixing up our cause and effect)
+            > X and Y are both caused by something else (confounding)
+            > X and Y arent really related at all, we just got lucky in the sample (spurrious correlations)
+
+    || Confounding variables
+        - a confoudning variable is something that causes both X and Y to change
+        - so X and Y are correlated even though X does not cause Y and Y does not cause x
+        - examples:
+            > the amount of ice-cream sold and the amount of drownings in a week are positively correlated (both correlated with temp)
+            > the amount of car accidents and people named john are positively correlated (both scale with population)
+            > number of factories a chip manufacturer owns and the number of chips sold are positively correlated (market demand)
+
+    || Spurrious correlations
+        - these are correlations that are just coincidences due to the particular samples
+        - they will probably not hold with longer/different samples
+        - look up spurrious correlations website
+
+------------------------------

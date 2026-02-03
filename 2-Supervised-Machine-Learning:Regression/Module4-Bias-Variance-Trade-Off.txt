@@ -1,0 +1,173 @@
+---Bias Variance Trade-Off---
+    || Model Complexity vs Error
+        - when building a model, we want training and test errors to be small
+        - on an error vs complexity curve
+            > if we are too far out to the right (high complexity), we will have a very low training error due to overfitting,
+              but a high cross validation error as the model will not generalise well
+            > if we are too far out to the left (low complexity), we will have a high training error due to underfitting, and
+              also a high cross validation error
+        - to optimise the model, we want to find the perfect balance between model training and predicting (low training and
+          prediction error)
+
+    || Bias and Variance of a Model
+        - very much like accuracy and precision of a model from school
+        - bias is a tendancy to miss, variance is a tendancy to be inconsistant
+        - tendancy is the expecation of out of sample behaviour over many training set samples
+        - using dartboard analogy
+            > low bias, low variance --> darts all clustered around bullseye
+            > high bias, low variance --> darts all clustered around a point away from the bullseye
+            > low bias, high variance --> darts spread widely around the bullseye
+            > high bias, high variance --> darts spread widely around a point away from the bullseye
+        - ideally, we want low bias and low variance, meaning highly consistent predictions that are close to perfect on average
+
+    || Sources of Model Error
+        - models can just be wrong, this will refer to models that just are not identifying the relationship between features
+          and the outcome variable
+            > this will be related to high bias models
+            > this is the tendancy of predictions to miss true values
+            > worsened by over-simplification or missing information
+            > this will happen when we miss the real patterns all together (associated with underfitting)
+
+        - models can be unstable, this will refer to models which are too perfectly identifying the relationship between X and y,
+          as they are incorporating random noise as well as the actual underlying function
+            > this will be related to high variance models
+            > this is the tendancy of predictions to fluctuate
+            > characterised by sensitivity of output data to small changes in input data
+            > often due to overly complex models that try to fit the data too perfectly (overfitting)
+
+        - unavoidable randomness from real world effects
+            > this is called irreducible error
+            > present in even the best possible model
+
+    || Bias Varaince Trade-Off
+        - model adjustments that decrease bias often increase variance, and vice-versa
+        - model complexity will increase variance, and decrease bias
+        - the bias variance tradeoff is analogous to a complexity trade off
+        - finding the best model will mean finding the right level of complexity
+        - in the context of polynomial regression
+            > higher degree means higher complexity (lower bias, higher variance)
+            > at lower degrees, we can see visual signs of bias, where predictions are too rigid to capture curve patterns in data
+            > at higher degrees, we see models fluctuating wildly because of the models' sensitivity
+            > the goal is to find the right degree, such that the model has sufficient complexity to describe the data without
+              overfitting
+
+-----------------------------
+
+
+
+---Regularisation and Model Selection---
+    || Regularisation as an approach to overfitting
+        - regularisation allows us to tune model complexity with more granularity that choosing polynomial degrees
+        - if we increase model complexity too much, the model will stop generalising well and test error will be high
+            > one way to solve this is by decreasing model complexity
+            > another way to solve this is by using regularisation to take our existing model and make it not as complex
+
+        - regularisation uses an adjusted cost function
+
+            cost_adjusted = M(W) + l*R(W)
+
+                M(W) = model error
+                R(W) = function of the strengths of the different parameters
+                   l = regularisation strength parameter (lambda)
+
+            > regularisation adds an (adjustable) regularisation strength parameter directly into the cost function, that can
+              penalise the model extra if it is too complex
+            > this will essentially allow us to dumb down the model
+            > the stronger our weights (parameters), the higher the cost function is going to be
+            > the l (lambda) adds a penalty proportional to the model strength parameter, so the higher the lambda, the more we
+              penalise the strength of our parameters
+            > so, higher lambda will cause us to minimse stronger paramters, making our model less complex
+
+        - more regularisation introduces a simpler model and more bias
+        - less regularisation makes the model more complex and increases variance
+        - if our model is overfit (variance too high), regularisation can reduce the generalisation error and reduce variance
+        - regularisation and feature selection
+            > regularisation performs feature selection by shrinking the contribution of features
+            > for L1 (Lasso) regression, this is accomplished by driving some of the coefficients to zero (removing the
+              contribution of features alltogether)
+            > feature selection can also be performed by removing features
+            
+        - feature elimination can be very useful
+            > reducing the number of features can prevent overfitting (not all features are relevant)
+            > can also be used to improve fitting time
+            > identifying the most critical features can also aid model interpretability
+
+    || Standard approaches to Regularisation
+        - Ridge Regression L2
+            > cost function
+
+                RSS + l * SUM(b_i^2)
+
+                RSS = residual sum of squares from regular regression
+                b_i = the regression coefficient at for each feature
+                  l = regularisation strength parameter
+        
+            > model is fit by minimising this cost function
+            > since cost function includes an extra term involving the coefficient, we penalise large coefficients in front of
+              features, making the model less likely to overfit
+            > with our original linear regression, scale would not matter at all, but now that we are including this addition
+              it is of the utmost importance
+                * this way, the additions to the error per feature are all within the same scale as each other
+                * this means that differing scale of features (and subsequently coefficients) would have hugely different effects
+                  on the effect of the complexity penalty
+                * so, we scale everything so that the relative sizes of the coefficients are proportional to their relevance
+
+            > to summarise in ridge regression  
+                * the complexity penalty l (lambda), is applied proportionally to squared coefficient values
+                * the penalty term has the effect of shrinking coefficients toward zero
+                * this imposes bias on the model, but reduces variance
+                * we can select the best regularisation strength using cross validation
+                * it is best practice to scale features, so that our penalties are not impacted by a feature's scale
+                * larger coefficients are strongly penalised because of squaring
+        
+        - LASSO Regression - L1
+            > cost function
+
+                RSS + l * SUM( |b_i| )
+
+                    RSS = residual sum of squares from regular regression
+                    b_i = the regression coefficient at for each feature
+                    l = regularisation strength parameter
+
+            > the only difference between LASSO and Ridge regression is the addition to the cost function
+            > Ridge has SUM(b_i^2), whereas LASSO has SUM(ABS(b_i))
+                * penalties are closely related to L1 and L2 norms, that measure vector length
+            > LASSO vs Ridge
+                * LASSO stands for Least Absolute Shrinkage and Selection Operator - using abs value to penalise coefficients
+                * Similar effect to ridge in terms of complexity trade off - increasing l (lambda) raises bias but lowers variance
+                * LASSO is more likely than Ridge to perform feature selection, in that for a fixed l (lambda), LASSO is more
+                  likely to result in coefficients being set to zero
+                * however, LASSO is slower to converge than Ridge
+
+        - Elastic Net
+            > the bridge between Ridge and LASSO regression, it is a hybrid approach between the two models
+            > cost function
+
+                RSS + l * SUM( a*b_i^2 + (1-a)*| b_i | )
+
+            > LASSO's feature selection property gives an interpretability bonus, but may underperform if the target truly
+              depends on many of the features 
+            > Elastic Net, introduces a new parameter a (alpha), that determines a weighted average of L1 and L2 penalties
+
+
+    || Recursive Feature Elimination
+        - RFE is a method that combines
+            > a model or estimation approach
+            > a desired number of features
+        - RFE then repeatedly applies the model, measures the different feature importances, and then recursively removes less
+          important features
+        - Importantly, we have to make sure our features are scaled so that feature imortances can be compared to one another
+        - Syntax
+            from sklearn.feature_selection import RFE
+
+            # create an instance of the RFE class
+            rfeMod = RFE(est, n_features_to_select=5)
+                # est is just an instance of the model to use
+                # we also predefine how many features we want to keep in the data
+
+            rfeMod = rfeMod.fit(X_train, y_train)
+            y_pred = rfeMod.predict(X_test)
+
+        - the RFECV class will perform feature emlimination using cross validation
+----------------------------------------
+

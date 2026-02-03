@@ -1,0 +1,173 @@
+---CSV files---
+    || Description:         stands for comma separated values
+                            form of storing tabulated data
+
+    || Reading:             using pandas, csv files can be read with just a few lines of code:
+                                import pandas as pd 
+                                filepath = data/iris_data.csv
+                                data = pd.read_csv(filepath)
+
+    || Useful arguments:                
+        - different delimiters:     for tab separated files (.tsv), we change the sep argument within the read function:
+                                        data = pd.read_csv(filepath, sep="\t")
+                                    for space separated files, use:
+                                        data = pd.read_csv(filepath, delim_whitespace=True)    
+
+        - first row col names:          data = pd.read_csv(filepath, header=None)
+
+        - specify column names:         data = pd.read_csv(filepath, names=["name1", "name2"])
+
+        - custom missing values:    allows us to choose what we want to pick what exact values are recorder as null values we can use:
+                                        data = pd.read_csv(filepath, na_values=["NA", -1]) # will replace "NA" or -1 with pd.NaN
+---------------
+
+
+
+---JSON files---
+    || Description:         stands for JavaScript object notation
+                            are a standard way to store data across platforms
+                            very similar in structure to python dictionaries
+
+    || Reading:             to read JSON file to a dataframe use:
+                                data = pd.read_json(filepath)
+
+    || Writing:             to write a dataframe to a JSON file use:
+                                data.to_json("outputfile.json")
+
+    || Useful arguments:    if you are having trouble reading your json file, you should look at the way data is organised and
+                            use the appropriate argument
+----------------
+
+
+
+---SQL Databases---
+    || Description:         represent a set of relational databases with fixed schemas and stands for Structured Query Language
+        - Examples:             Microsoft SQL server
+                                Postgres
+                                MySQL
+                                AWS Redshift
+                                Oracle DB
+                                Db2 Family
+
+    || Reading:             use sqlite3 to read databases:
+                                import sqlite3 as sq3
+                                import pandas as pd
+
+                                # define path to database
+                                path = "data/classic_rock.db"
+
+                                # create connection
+                                con = sq3.connect(path)
+                                
+                                # write query
+                                query = """
+                                            Select * from rock_songs;
+                                        """
+                                # execute query
+                                data = pd.read_sql(query, con)
+-------------------
+
+
+
+---NoSQL Databases---
+    || Description:         databases are not relational and may vary a bit more in structure
+                            depending on application, may perform more quickly or reduce technical overhead
+                            most NoSQL databases store data in JSON format
+        - Examples:             Document databases:     mongoDB, couchDB            (like one observation)
+                                Key-value stores:       riak, voldemort, redis      (key is lookup, primary key and many values)
+                                Grapy databases:        Neo4j, Hypergraph           (network analysis for relationships eg. linkedIn)
+                                Wide-column stores:     Cassandra, HBase            (columns are collected together in column family)
+
+    || Reading:             using mongoDB as an example:
+                                from pymongo import MongoClient
+
+                                # create connection
+                                con = MongoClient()
+
+                                # choose database (can use con.list_database_names() to show available databases)
+                                db = con.database_name      # or whatever the name of the database is
+
+                                # create a cursor object using a query
+                                cursor = db.collection_name.find(query)     (query should be mongoDB query)
+
+                                # expand cursor and construct dataframe
+                                df = pd.DataFrame(list(cursor))
+---------------------
+
+
+
+---APIs and cloud data access---
+    || Description:         a variety of data providers make data available via Application Programming Interfaces that make it
+                            easy to access data via python
+    
+    || Reading:             use URLs to the API:
+                                url = "http://exampleAPIurl.data"
+                                df = pd.read_csv(url, header=None)
+--------------------------------
+
+
+
+---Data Cleaning---
+    || Importance:          key aspects of the machine learning workflow depend on cleaned data
+                            training algorithms requires correctly labelled data
+                            messy data can lead to garbage in, garbage out
+    
+    || Problems:
+        - Lack of data:         for a model to be successful there needs to be sufficient, relevant data
+        - Too much data:        spread across different environments and databases, needs to be collected and organised
+        - Bad data:             garbage in garbage out
+
+    || How can data be messy:
+        - Duplicates or unnecessary data
+        - Inconsistent text and typos
+        - Missing data
+        - Outliers
+        - Data sourcing issues - trouble bringing in data from multiple systems/different db dtypes/etc
+
+    || Duplicated data:     pay attention to duplicate values and research why there are multiple values
+                            good idea to look at the features you are bringing in a filter the data as necessary (dont overfilter)
+
+    || Policies for missing values:
+        - Remove the data - but could lead to too much data being lost
+        - Impute the data - fill in the missing data with average values, most common value, but could lead to uncertainty
+        - Mask the data - create a category for missing values (may provide extra information), but can create uncertainty too
+
+    || Outliers:            observation in data that is different from most observations
+                            typically the observations are erros and do not accurately represent what our model is tring to exploration
+                            they can have significant impacts on the model if we do not address them
+                            some outliers can be useful and provide insights into the data
+        to find outliers:
+            - plots, ie. histogram, density plot, box plot
+                > using plotly/plotly graph objects
+                > could also use seaborn, but have mainly experience with plotly so keep to that
+                > prioritise plotly over plotly graph objects as is cleaner
+            - statistics, ie. IQR, standard deviation
+                > use numpy as follows:
+                    import numpy
+                    q25, q50, q75 = np.percentile(data, [25, 50, 75])
+                    iqr = q75 - q25
+                > find Outliers
+                    min = q25 - 1.5*iqr
+                    max = q75 + 1.5*iqr
+                > identify the points
+                    [x for x in data["Column"] if (x > max) or (x < min)]
+                > could also plot a boxplot and read off it
+            - residuals, ie. standardised, deleted and studentised residuals are the difference between the actual and predicted values 
+              of the outcome variable and represent model failure
+                > standardised: residual divided by standard error
+                > deleted: residual from fitting model on all data excluding current observation
+                > studentised: deleted residuals divided by residual standard error (like in standardised)
+        
+        policies for outliers:
+            - remove them
+            - assign the mean or median value
+            - transform the variable
+            - predict what the value would have been
+                > using similar observations
+                > using regression
+            - keep them, but focus on models that are resistant to outliers
+
+        
+
+
+

@@ -1,0 +1,12 @@
+---How regularisation works---
+    || Analytic view
+        - increasing L1/L2 penalties forces coefficients to be smaller, restricting their plausible range
+        - a smaller range for coefficients must be simpler/lower variance than a function with an infinite possible coefficient
+          range
+        - when we eliminate features, we are practically eliminating variance, as there are many more solutions available for
+          models with more features, than models with less
+        - when shrinking coefficients, the y-varaible will change much less when a feature changes
+
+    || Geometric view
+        - under the geometric formulation, the cost function minimum is found at the intersection of the penalty boundary (penalty
+          from each of the coefficients and a contour of the traditional OLS cost function surface

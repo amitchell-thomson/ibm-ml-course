@@ -1,0 +1,77 @@
+---Definitions---
+    || AI:                  a program that can sense, reason, act and adapt
+
+
+    || Machine learning:    the study and construction of programs that are not explicitly progammed, but that learn patterns as 
+                            they are exposed to more data over time
+
+                            eg. emails labelled spam or not spam are fed into a machine learning algorithm that then will be able
+                            to label new emails in the future as spam or not spam (more training data, better classification)
+                                
+        - Terminology:          features - are attributes of the data (eg. in flower classification petal length width etc)
+                                target - column to be predicted (eg. in flower classification species)
+
+        - Types of learning:    supervised learning - dataset HAS a target column, goal is to make predictions
+                                unsupervised learning - does NOT have a target column, goal is to find structure in the data
+
+        - Limitations of ML:    image classification - would be working with a huge number of featuers, and if each pixel was a
+                                                       feature, the spacial relationships of pixels would be lost
+ 
+
+    || Deep learning:       subset of machine learning that uses complicated models called "deep neural networks", models determine 
+                            best represenatation of origional data
+
+                            called deep learning as we are able to create models with much deeper (many more) layers
+
+        - Benefit:              consits of a neural network that can combine feature detection and classifcation into a series of
+                                layers which will eventually be able to classify an image
+
+                                can be useful with huge amounts of complex data that has too many features to use ML flower
+        
+        - Caution:              there are some situations in which ML can still perform better that DL when dealing with smaller,
+                                more strucured datasets, simpler datasets or when interpretability is crucial
+
+        - History:              2014 - computer vision algorithm that can describe photos
+                                2015 - deep learning platform tensorflow is developed
+                                2019 - tensorflow incorporates keras which makes it more powerful
+------------------
+
+
+
+---AI Landscape today---
+    || Computer vision:     self driving cars with object detection, and healthcare can give improved diagnosis
+    || Natural language:    vast improvements in ability to translate, evaluate sentiment and even write papers
+    
+    This era of AI is different as we now have bigger datasets, faster computers and also have the abilities of neural networks
+
+    Machine learning algorithms are being used in virtually every areas of the modern world
+------------------------
+
+
+
+---Applications---
+    || Transporation:       algorithms for google and waze process traffic data to find the optimal route from one point to another
+                            ride sharing for uber predicts real time demand using AI techniques
+
+    || Social media:        use algorithms to decide what content to suggest to users based on a history of interaction
+                            use sentiment analysis to categorise media and allow the appropriate "mood" to be presented
+
+    || Daily life:          siri on our phones that can recognise our voice and do tasks
+                            object detection/facial recognition on phones than can categorise who is in which photo automatically
+
+---Machine learning workflow---
+    || Steps
+        - Problem statement:   what are you trying to solve
+        - Data collection:     what data do you need to solve it
+        - Data exploration
+          & preprocessing:     how should you clean your data so you model can use it
+        - Modeling:            build a model to solve the problem
+        - Validation:          did you solve the problem (normally part of your training data is set aside for testing at the end)
+
+
+    || Vocabulary
+        - target:       value that we are trying to predict
+        - features:     property of the data that will be used for prediction (explanatory variables)
+        - example:      a single row within the dataset
+        - label:        the value for the target variable
+-------------------------------

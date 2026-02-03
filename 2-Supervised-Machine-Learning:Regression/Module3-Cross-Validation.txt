@@ -1,0 +1,53 @@
+|| Cross validation
+    - still split the data into two parts, but now splitting the data into multiple pairs of train/test splits
+    - each pair will have the same train/test proportions but will contain different selections of data from the whole set
+    - we split the data so that there is no overlap between the test splits (each test split has entirely different data to
+        any of the others):
+    
+        *test split     train split     train split     train split
+                                        +
+        train split     *test split     train split     train split
+                                        + 
+        train split     train split     *test split     train split
+                                        +
+        train split     train split     train split     *test split
+                                        =
+                        average cross validation results
+
+    - as models get more complex, the training error on one train/test split will decrease, as the  model will fit more and
+        more exactly to each point (overfitting)
+    - however, with increasing complexity, the cross validation error will only decrease up until a point, after which it will
+        start increasing again as the model will not generalise well to new data
+        > curve looks like a u, with the portion of results to the left of the minima being referred to as underfitted, and to
+            the right being overfitted
+        > at the minima, both the training and cross validation errors are low, and the model is not over or underfit
+        > in practice, we make our model more complex until the cross validation error stops decreasing, 
+|| Cross validation approaches
+    - k-fold cross validation   
+        > using each of k subsamples as a test samples
+        > this is what we have seen so far
+        > if k is 4 then we have 4 pairs of train/test splits, where we can train on each one of those 4 pairs
+        > we then evaluate using each one of the test sets and average out the errors
+    - Leave-one-out cross validation
+        > using each observation as a test sample
+        > same as k-fold, but k is the number of total rows minus 1 (leave one out)
+        > this will give us many more test sets, so better evaluation, but will take a lot longer
+    - Stratified cross validation
+        > k-fold cross validation with representative test samples
+        > we try to keep the train/test splits to have the same proportions of values in them
+
+|| Syntax
+    from sklearn.model_selection import cross_val_score
+
+    # model can be a linear regression model or even a pipeline if you want to pass in if you want to try with polynomial/without
+    # cv is how you control the number of splits that you want to do
+    # we want to maximise whatever the scoring value is so we want the negative mean squared error to minimise regular error
+    cross_val = cross_val_score(model, X_data, Y_data, cv=4, scoring='neg_mean_squared_error')
+
+
+
+    --another method--
+
+    from sklearn.model_selection import KFold, StratifiedKFold
+
+

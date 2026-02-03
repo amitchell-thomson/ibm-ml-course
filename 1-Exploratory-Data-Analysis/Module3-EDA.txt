@@ -1,0 +1,145 @@
+---Introduction---
+    || Definitions:         EDA is an approach to analysing datasets to summarise their characteristics, often using visual methods
+    
+    || Use:                 
+        - EDA allows us to get an initial feel for the data
+        - This allows us to see if the data makes sense, or if further cleaning/more data is required
+        - EDA helps identify patterns or trends in the data (just as important as findings from modelling)
+
+    || Tools
+        - Data wrangling - use pandas
+        - Visualisations - use matplotlib or seaborn (plotly is better I think)
+
+------------------
+
+
+
+---Sampling---
+    || Random Sample
+        - For large datasets, a random sample can make computation easier
+        - We may want to fist train models on a random sample and then move onto larger set
+        - In pandas we can do this using .sample():
+            sample = data.sample(n=5, replace = False) # if replace=True then the same row could show up more than once
+
+
+    || Stratified Sample
+        - We may want to change sampling of certain observations if outcomes are uneven
+        - This can make the sample become indicative of the relativeproportions of the data
+        
+--------------
+
+
+
+---Techniques---
+    || Summary statistics:
+        - averag
+        - median
+        - min/max
+        - correlations
+    
+    || Visualisations:
+        - Histograms - to see distribution
+        - Scatter plots - to see correlations/relationship between columns
+        - Box plots - look at distribution and identify outliers
+
+    
+---Visualisations---
+    || matplotlib
+        - the main library used to create plots and graphs in python
+        - a lot of flexibilities with many features you can tweak and change
+        - creating plots:
+            import matplotlib.pyplot as platforms
+            plt.plot(data.sepal_length,
+                data.sepal_width,
+                ls = "",
+                marker = "o",
+                label = "sepal"
+            )
+            
+            plt.plot(data.petal_length,
+                data.petal_width,
+                ls = "",
+                marker = "o",
+                label = "petal"
+            )
+            plt.legend
+            # code above will create two overlayed plots with different auto-assigned colours and a legend
+
+        - customising plots
+            fig, ax = plt.subplots()
+            ax.barh(                        # horizontal bar plot
+                np.arrange(10),
+                data.sepal_width.iloc[:10]
+            )
+            ax.set_yticks(np.arrange(0.4, 10.4, 1.0))
+            ax.set_yticklabels(np.arrange(1,11))
+            ax.set(xlabel="xlabel", ylabel="ylabel", title="Title")
+
+    || pandas (via matplotlib)
+    
+    || seaborn
+        - built on top of matplotlib
+        - made to create pretty plots
+        - statistically foxcused plotting methods (linear model/pairwise correlation/etc)
+
+--------------------
+
+
+
+---Grouping data for EDA---
+    || Pandas dataframe approach
+        - using groupby object
+            data.groupby("species").mean().plot(
+                colour=["red", "blue", "black", "green"],
+                fontsize=10.0,
+                figsize=(4,4)
+            )
+        - this would create graph with species on the x axis and multple lines for mean of each feature my species on the y
+
+    || Seaborn plot
+        - use pairplot to find feature correlations
+            sns.pairplot(
+                data,
+                hue="species",
+                size=3
+            )
+        - creates a grid of scatterplots between each feature and all the others
+        - use seaborn hexbin plot to show density of points:
+            sns.jointplot(
+                x=data["sepal_length"],
+                y=data["sepal_width"],
+                kind="hex"
+            )
+        - creates a scatterplot kind of graph with hexagons being darker to signify more points in that region
+        - use seaborn facet grid to see across different categories:
+            # first plot statement
+            plot = sns.FacetGrid(
+                        data,
+                        col="species"
+                        margin_titles=True
+                    )
+            plot.map(
+                plt.hist,
+                "sepal_width"
+                colour="green"
+            )
+            # second plot statement
+            plot = sns.FacetGrid(
+                        data,
+                        col="species"
+                        margin_titles=True
+                    )
+            plot.map(
+                plt.hist,
+                "sepal_length"
+                colour="blue"
+            )
+        - this will create a grid of histogram for every species and its features, so one for setosa sepal width, etc...
+---------------------------
+
+
+
+
+
+
+
